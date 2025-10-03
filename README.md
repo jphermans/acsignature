@@ -7,6 +7,12 @@
 
 ---
 
+ ## 🚀 Live Demo
+Bekijk en gebruik de generator hier:  
+👉 [Signature Generator](https://jphermans.github.io/acsignature/)
+
+---
+
 ## 📌 Over dit project
 Een eenvoudige tool om automatisch professionele e-mailhandtekeningen te genereren.  
 Gebouwd met **HTML, CSS en JavaScript**.  
@@ -89,7 +95,5 @@ Klik op **Exporteer naar Outlook** → er worden 3 bestanden aangemaakt:
   ```bash
   %appdata%\Microsoft\Signatures
 
-  ## 🚀 Live Demo
-Bekijk en gebruik de generator hier:  
-👉 [Signature Generator](https://jphermans.github.io/acsignature/)
+ 
 
