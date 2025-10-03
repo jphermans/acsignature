@@ -97,6 +97,20 @@ AtlasCopco(john.doe@atlascopco.com)_files\
       document.querySelectorAll("input").forEach(input => input.classList.remove("error"));
       document.querySelectorAll(".error-message").forEach(msg => msg.style.display = "none");
     }
+	
+	function isValidBelgianMobile(number) {
+	  // spaties en streepjes verwijderen
+	  const clean = number.replace(/[\s\-]/g, "");
+
+	  // Nationaal: 10 cijfers, start met 04
+	  const nationalPattern = /^04\d{8}$/;
+
+	  // Internationaal: +32 gevolgd door 9 cijfers (zonder 0 erna)
+	  const intlPattern = /^\+32\d{9}$/;
+
+	  return nationalPattern.test(clean) || intlPattern.test(clean);
+	}
+
 
     function generateSignature() {
       clearErrors();
@@ -112,7 +126,12 @@ AtlasCopco(john.doe@atlascopco.com)_files\
       if (!name) { showError("name"); valid = false; }
       if (!title) { showError("title"); valid = false; }
       if (!email || !email.toLowerCase().endsWith("@atlascopco.com")) { showError("email"); valid = false; }
-      if (!mobile) { showError("mobile"); valid = false; }
+      if (!mobile || !isValidBelgianMobile(mobile)) {
+		  document.getElementById("error-mobile").innerText =
+			"Geef een geldig Belgisch mobiel nummer (04xxxxxxxx of +32xxxxxxxxx)";
+		  showError("mobile");
+		  valid = false;
+		}
 
       if (!valid) return;
 
