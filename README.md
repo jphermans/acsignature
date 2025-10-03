@@ -29,6 +29,9 @@ De tool gebruikt een strak en clean design met herkenbare kleuren:
 
 ---
 
+![Signature Preview](assets/generator.png)
+
+
 ## ⚙️ Installatie & Gebruik
 
 ### 1. Open de generator
