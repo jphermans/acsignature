@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Atlas Copco Handtekening Generator</title>
+  <style>
+    body { font-family: Calibri, Arial, sans-serif; margin: 40px; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input { width: 400px; padding: 5px; margin-top: 5px; }
+    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor:pointer; }
+    #signature { margin-top: 40px; padding: 20px; border-top: 2px solid #000; }
+    .line { border: none; border-top: 1px solid #E1D6CE; margin: 8px 0; }
+    #instructions { margin-top: 40px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; }
+    .error { border: 1px solid red; }
+    .error-message { color: red; font-size: 10pt; margin: 3px 0 10px 0; display: none; }
+    footer { margin-top: 40px; font-size: 10pt; color: #666; display: flex; align-items: center; gap: 8px; }
+    footer svg { width: 18px; height: 18px; fill: #333; vertical-align: middle; }
+    footer a { color: #333; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h2>Atlas Copco Handtekening Generator (België)</h2>
+
+  <label for="name">Naam:</label>
+  <input type="text" id="name" required>
+  <div id="error-name" class="error-message">Naam is verplicht</div>
+
+  <label for="title">Functie:</label>
+  <input type="text" id="title" required>
+  <div id="error-title" class="error-message">Functie is verplicht</div>
+
+  <label for="email">E-mail:</label>
+  <input type="email" id="email" required>
+  <div id="error-email" class="error-message">E-mail is verplicht en moet eindigen op @atlascopco.com</div>
+
+  <label for="mobile">Mobiel (verplicht):</label>
+  <input type="text" id="mobile" required>
+  <div id="error-mobile" class="error-message">Mobiel nummer is verplicht</div>
+
+  <label for="phone">Telefoon (optioneel):</label>
+  <input type="text" id="phone">
+
+  <button onclick="generateSignature()">Genereer Handtekening</button>
+  <button onclick="exportAll()">Exporteer naar Outlook (htm, rtf, txt)</button>
+
+  <div id="signature"></div>
+
+  <div id="instructions">
+    <h3>Outlook implementatie</h3>
+    <p><b>Optie 1: Download en importeer bestanden</b></p>
+    <ol>
+      <li>Klik op <b>Exporteer naar Outlook</b> → er worden 3 bestanden gedownload: <code>AtlasCopco.htm</code>, <code>AtlasCopco.rtf</code> en <code>AtlasCopco.txt</code>.</li>
+      <li>Open de map <code>%appdata%\Microsoft\Signatures</code> in Windows Verkenner.</li>
+      <li>Plaats de 3 bestanden in deze map.</li>
+      <li>Herstart Outlook → ga naar <b>Bestand → Opties → E-mail → Handtekeningen</b> en kies <b>AtlasCopco</b> als standaard.</li>
+    </ol>
+
+    <p><b>Optie 2: Handmatig plakken</b></p>
+    <ol>
+      <li>Genereer de handtekening.</li>
+      <li>Selecteer en kopieer (<kbd>Ctrl+C</kbd>) de inhoud uit het voorbeeldvak.</li>
+      <li>Open Outlook → <b>Bestand → Opties → E-mail → Handtekeningen</b>.</li>
+      <li>Kies <b>Nieuwe handtekening</b> of bewerk een bestaande.</li>
+      <li>Plak (<kbd>Ctrl+V</kbd>) de handtekening rechtstreeks in het editorvak.</li>
+      <li>Sla op en stel in als standaard.</li>
+    </ol>
+  </div>
+
+  <footer>
+    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 
+        7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49
+        -2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+        -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 
+        1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07
+        -1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+        -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.62 
+        7.62 0 0 1 8 4.8c.68.01 1.36.09 2 .26 1.53-1.04 
+        2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 
+        1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 
+        1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 
+        8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+    </svg>
+    <a href="https://github.com/jphermans/acsignature" target="_blank">Developed by JPHsystems © 2025</a>
+  </footer>
+
+  <script>
+    let htmlSignature = "";
+    let txtSignature = "";
+    let rtfSignature = "";
+
+    function clearErrors() {
+      document.querySelectorAll("input").forEach(input => input.classList.remove("error"));
+      document.querySelectorAll(".error-message").forEach(msg => msg.style.display = "none");
+    }
+
+    function generateSignature() {
+      clearErrors();
+
+      const name = document.getElementById('name').value.trim();
+      const title = document.getElementById('title').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const mobile = document.getElementById('mobile').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      let valid = true;
+
+      if (!name) { showError("name"); valid = false; }
+      if (!title) { showError("title"); valid = false; }
+      if (!email || !email.toLowerCase().endsWith("@atlascopco.com")) { showError("email"); valid = false; }
+      if (!mobile) { showError("mobile"); valid = false; }
+
+      if (!valid) return;
+
+      let contactInfoHtml = "";
+      let contactInfoText = "";
+
+      contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">Mobile: <a href="tel:${mobile}" style="color:#2F363A;text-decoration:none;">${mobile}</a></div>`;
+      contactInfoText += `Mobile: ${mobile}\n`;
+
+      if (phone !== "") {
+        contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">Phone: <a href="tel:${phone}" style="color:#2F363A;text-decoration:none;">${phone}</a></div>`;
+        contactInfoText += `Phone: ${phone}\n`;
+      }
+
+      contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">E-mail: <a href="mailto:${email}" style="color:#0092BC;text-decoration:none;">${email}</a></div>`;
+      contactInfoText += `E-mail: ${email}\n`;
+
+      // HTML versie
+      htmlSignature = `
+<html><head><meta charset="UTF-8"></head><body>
+<div style="font-family:Calibri,Arial,sans-serif; font-size:9pt; color:#2F363A; line-height:1.4; max-width:600px;">
+  <div>Best regards,</div><br>
+  <div style="font-weight:bold; color:#0092BC; font-size:11pt; margin-top:4px;">${name}</div>
+  <div style="font-weight:bold; font-size:9pt; margin-top:2px;">${title}</div>
+
+  <hr style="border:0;border-top:1px solid #E1D6CE;margin:8px 0;">
+
+  <div style="font-weight:bold; font-size:10pt;">Atlas Copco Tools Central Europe GmbH</div><br>
+  <div>Head Office: Atlas Copco Tools Central Europe GmbH, Langemarckstr. 35, D-45141 Essen</div>
+  <div style="color:red; font-weight:bold;">Head Office: New Address as of Dec 1, 2025: Wetterschacht 9, D-45139 Essen</div>
+  <div>Branch Office Belgium (Atlas Copco Tools Belgium): Bremakker 45, B-3740 Bilzen</div>
+  <div>Managing Director: Claus Schiedeck, Peter Edmonds</div>
+
+  ${contactInfoHtml}
+
+  <div style="margin-top:6px;">VAT Reg.No.: DE811155641 (Germany) / BE0473470658 (Belgium)</div>
+  <div>Company Reg. Office: HRB 5096 – Local Court Essen (Head Office) / R.C.B. 646980 - Brussels (Belgian Branch)</div>
+  <div>Peppol ID (Belgium): 0208:0473470658</div>
+
+  <div style="margin-top:6px;">Privacy Policy: <a href="https://www.atlascopco.com/nl-be/itba/privacy-policy" target="_blank" style="color:#0092BC;text-decoration:none;">https://www.atlascopco.com/nl-be/itba/privacy-policy</a></div>
+
+  <hr style="border:0;border-top:1px solid #E1D6CE;margin:8px 0;">
+
+  <div><b style="color:#0092BC;">Level up your experience at</b> <a href="https://www.atlascopco.com" target="_blank" style="color:#0092BC; font-style:italic; text-decoration:none;">atlascopco.com</a></div>
+
+  <hr style="border:0;border-top:1px solid #E1D6CE;margin:8px 0;">
+
+  <table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td><img src="https://groupapp.atlascopco.com/mail-signature/Signature/AtlasCopco/ACBlueSquare.png" width="8" height="8" style="display:block;"></td>
+      <td style="padding-left:5px;">
+        <span style="font-size:8pt; color:#A1A9B4; font-weight:bold;">Part of Atlas Copco Group</span>
+      </td>
+    </tr>
+  </table>
+</div>
+</body></html>`;
+
+      // TXT versie
+      txtSignature = `Best regards,
+
+${name}
+${title}
+
+----------------------------------------
+Atlas Copco Tools Central Europe GmbH
+
+Head Office: Atlas Copco Tools Central Europe GmbH, Langemarckstr. 35, D-45141 Essen
+Head Office: New Address as of Dec 1, 2025: Wetterschacht 9, D-45139 Essen
+Branch Office Belgium (Atlas Copco Tools Belgium): Bremakker 45, B-3740 Bilzen
+Managing Director: Claus Schiedeck, Peter Edmonds
+
+${contactInfoText}
+VAT Reg.No.: DE811155641 (Germany) / BE0473470658 (Belgium)
+Company Reg. Office: HRB 5096 – Local Court Essen (Head Office) / R.C.B. 646980 - Brussels (Belgian Branch)
+Peppol ID (Belgium): 0208:0473470658
+
+Privacy Policy: https://www.atlascopco.com/nl-be/itba/privacy-policy
+----------------------------------------
+Level up your experience at atlascopco.com
+----------------------------------------
+Part of Atlas Copco Group
+`;
+
+      // RTF versie (basic)
+      rtfSignature = `{\\rtf1\\ansi\\deff0
+{\\fonttbl{\\f0 Calibri;}}
+\\f0\\fs18 Best regards,\\line
+\\b\\cf1 ${name}\\b0\\line
+${title}\\line
+\\line
+Atlas Copco Tools Central Europe GmbH\\line
+Head Office: Atlas Copco Tools Central Europe GmbH, Langemarckstr. 35, D-45141 Essen\\line
+Head Office: New Address as of Dec 1, 2025: Wetterschacht 9, D-45139 Essen\\line
+Branch Office Belgium (Atlas Copco Tools Belgium): Bremakker 45, B-3740 Bilzen\\line
+Managing Director: Claus Schiedeck, Peter Edmonds\\line
+\\line
+${contactInfoText.replace(/\n/g, "\\line ")}\\line
+VAT Reg.No.: DE811155641 (Germany) / BE0473470658 (Belgium)\\line
+Company Reg. Office: HRB 5096 – Local Court Essen (Head Office) / R.C.B. 646980 - Brussels (Belgian Branch)\\line
+Peppol ID (Belgium): 0208:0473470658\\line
+\\line
+Privacy Policy: https://www.atlascopco.com/nl-be/itba/privacy-policy\\line
+Level up your experience at atlascopco.com\\line
+Part of Atlas Copco Group
+}`;
+      document.getElementById('signature').innerHTML = htmlSignature;
+    }
+
+    function showError(field) {
+      document.getElementById(field).classList.add("error");
+      document.getElementById("error-" + field).style.display = "block";
+    }
+
+    function exportAll() {
+      if (!htmlSignature) {
+        alert("Genereer eerst een handtekening!");
+        return;
+      }
+      downloadFile("AtlasCopco.htm", htmlSignature, "text/html");
+      downloadFile("AtlasCopco.txt", txtSignature, "text/plain");
+      downloadFile("AtlasCopco.rtf", rtfSignature, "application/rtf");
+    }
+
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+  </script>
+</body>
+</html>
