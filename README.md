@@ -58,3 +58,8 @@ Klik op **Exporteer naar Outlook** → er worden 3 bestanden aangemaakt:
 - Open de map:  
   ```bash
   %appdata%\Microsoft\Signatures
+
+  ## 🚀 Live Demo
+Bekijk en gebruik de generator hier:  
+👉 [Signature Generator](https://jphermans.github.io/acsignature/)
+
