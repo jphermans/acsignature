@@ -18,6 +18,9 @@
     footer a { color: #333; text-decoration: none; }
     footer a:hover { text-decoration: underline; }
   </style>
+  <!-- JSZip + FileSaver voor zip-download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body>
   <h2>Atlas Copco Handtekening Generator (België)</h2>
@@ -42,28 +45,28 @@
   <input type="text" id="phone">
 
   <button onclick="generateSignature()">Genereer Handtekening</button>
-  <button onclick="exportAll()">Exporteer naar Outlook (htm, rtf, txt)</button>
+  <button onclick="exportAll()">Exporteer naar Outlook (ZIP)</button>
 
   <div id="signature"></div>
 
   <div id="instructions">
     <h3>Outlook implementatie</h3>
-    <p><b>Optie 1: Download en importeer bestanden</b></p>
+    <p><b>Stappenplan:</b></p>
     <ol>
-      <li>Klik op <b>Exporteer naar Outlook</b> → er worden 3 bestanden gedownload: <code>AtlasCopco.htm</code>, <code>AtlasCopco.rtf</code> en <code>AtlasCopco.txt</code>.</li>
+      <li>Klik op <b>Exporteer naar Outlook (ZIP)</b> → er wordt een ZIP-bestand gedownload met alle nodige bestanden.</li>
+      <li>Open het ZIP-bestand en pak de inhoud uit.</li>
       <li>Open de map <code>%appdata%\Microsoft\Signatures</code> in Windows Verkenner.</li>
-      <li>Plaats de 3 bestanden in deze map.</li>
-      <li>Herstart Outlook → ga naar <b>Bestand → Opties → E-mail → Handtekeningen</b> en kies <b>AtlasCopco</b> als standaard.</li>
-    </ol>
-
-    <p><b>Optie 2: Handmatig plakken</b></p>
-    <ol>
-      <li>Genereer de handtekening.</li>
-      <li>Selecteer en kopieer (<kbd>Ctrl+C</kbd>) de inhoud uit het voorbeeldvak.</li>
-      <li>Open Outlook → <b>Bestand → Opties → E-mail → Handtekeningen</b>.</li>
-      <li>Kies <b>Nieuwe handtekening</b> of bewerk een bestaande.</li>
-      <li>Plak (<kbd>Ctrl+V</kbd>) de handtekening rechtstreeks in het editorvak.</li>
-      <li>Sla op en stel in als standaard.</li>
+      <li>Kopieer de bestanden en de map uit de ZIP naar deze Signatures-map.  
+        Voorbeeldstructuur:
+        <pre>
+AtlasCopco(john.doe@atlascopco.com).htm
+AtlasCopco(john.doe@atlascopco.com).rtf
+AtlasCopco(john.doe@atlascopco.com).txt
+AtlasCopco(john.doe@atlascopco.com)_files\
+        </pre>
+      </li>
+      <li>Sluit Outlook volledig af (ook via Taakbeheer) en start opnieuw.</li>
+      <li>Ga naar <b>Bestand → Opties → E-mail → Handtekeningen</b> en kies de nieuwe handtekening als standaard.</li>
     </ol>
   </div>
 
@@ -131,13 +134,13 @@
       htmlSignature = `
 <html><head><meta charset="UTF-8"></head><body>
 <div style="font-family:Calibri,Arial,sans-serif; font-size:9pt; color:#2F363A; line-height:1.4; max-width:600px;">
-  <div>Best regards,</div><br>
+  <div>Best regards,</div>
   <div style="font-weight:bold; color:#0092BC; font-size:11pt; margin-top:4px;">${name}</div>
   <div style="font-weight:bold; font-size:9pt; margin-top:2px;">${title}</div>
 
   <hr style="border:0;border-top:1px solid #E1D6CE;margin:8px 0;">
 
-  <div style="font-weight:bold; font-size:10pt;">Atlas Copco Tools Central Europe GmbH</div><br>
+  <div style="font-weight:bold; font-size:10pt;">Atlas Copco Tools Central Europe GmbH</div>
   <div>Head Office: Atlas Copco Tools Central Europe GmbH, Langemarckstr. 35, D-45141 Essen</div>
   <div style="color:red; font-weight:bold;">Head Office: <u>New Address as of Dec 1, 2025</u>: Wetterschacht 9, D-45139 Essen</div>
   <div>Branch Office Belgium (Atlas Copco Tools Belgium): Bremakker 45, B-3740 Bilzen</div>
@@ -170,13 +173,11 @@
 
       // TXT versie
       txtSignature = `Best regards,
-
 ${name}
 ${title}
 
 ----------------------------------------
 Atlas Copco Tools Central Europe GmbH
-
 Head Office: Atlas Copco Tools Central Europe GmbH, Langemarckstr. 35, D-45141 Essen
 Head Office: New Address as of Dec 1, 2025: Wetterschacht 9, D-45139 Essen
 Branch Office Belgium (Atlas Copco Tools Belgium): Bremakker 45, B-3740 Bilzen
@@ -229,17 +230,18 @@ Part of Atlas Copco Group
         alert("Genereer eerst een handtekening!");
         return;
       }
-      downloadFile("AtlasCopco.htm", htmlSignature, "text/html");
-      downloadFile("AtlasCopco.txt", txtSignature, "text/plain");
-      downloadFile("AtlasCopco.rtf", rtfSignature, "application/rtf");
-    }
+      const email = document.getElementById('email').value.trim();
+      const baseName = "AtlasCopco(" + email + ")";
 
-    function downloadFile(filename, content, type) {
-      const blob = new Blob([content], { type });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      link.click();
+      const zip = new JSZip();
+      zip.file(baseName + ".htm", htmlSignature);
+      zip.file(baseName + ".txt", txtSignature);
+      zip.file(baseName + ".rtf", rtfSignature);
+      zip.folder(baseName + "_files"); // lege map
+
+      zip.generateAsync({ type: "blob" }).then(function(content) {
+        saveAs(content, baseName + ".zip");
+      });
     }
   </script>
 </body>
