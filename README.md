@@ -9,7 +9,8 @@
 
  ## 🚀 Live Demo
 Bekijk en gebruik de generator hier:  
-👉 [Signature Generator](https://jphermans.github.io/acsignature/)
+👉 <a href="https://jphermans.github.io/acsignature/" target="_blank" rel="noopener noreferrer">Signature Generator</a>
+
 
 ---
 
