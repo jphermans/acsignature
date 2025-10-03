@@ -29,9 +29,10 @@ De generator:
 ## 🎨 Layout & Kleuren
 De tool gebruikt een strak en clean design met herkenbare kleuren:
 
-- **Accentkleur:** ![#0092BC](https://via.placeholder.com/15/0092BC/000000?text=+) `#0092BC`  
-- **Donkergrijs:** ![#2F363A](https://via.placeholder.com/15/2F363A/000000?text=+) `#2F363A`  
-- **Lichtgrijs:** ![#E1D6CE](https://via.placeholder.com/15/E1D6CE/000000?text=+) `#E1D6CE`  
+| Accentkleur | <img src="assets/colors/0092BC.svg" width="20"/> | `#0092BC` |
+| Donkergrijs | <img src="assets/colors/2F363A.svg" width="20"/> | `#2F363A` |
+| Lichtgrijs  | <img src="assets/colors/E1D6CE.svg" width="20"/> | `#E1D6CE` |
+
 
 ---
 
