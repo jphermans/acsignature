@@ -24,7 +24,8 @@ De generator:
 - ✅ Naamgeving volgens Outlook-standaard: `AtlasCopco(naam@atlascopco.com).*`.  
 - ✅ Zorgt dat verplichte velden (Naam, Functie, E-mail, Mobiel) ingevuld zijn.  
 - ✅ Controleert dat het e-mailadres eindigt op `@atlascopco.com`.  
-- ✅ Geeft duidelijke foutmeldingen bij ontbrekende velden.  
+- ✅ Geeft duidelijke foutmeldingen bij ontbrekende velden.
+- ✅ Houdt de knoppen consistent: **Velden leegmaken** gebruikt dezelfde secundaire stijl als de downloadknop.
 
 ---
 
