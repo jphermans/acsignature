@@ -268,6 +268,19 @@
       background: var(--accent-soft);
     }
 
+    button.tertiary {
+      background: var(--surface-soft);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-strong);
+    }
+
+    button.tertiary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px -18px rgba(15, 23, 42, 0.35);
+      background: rgba(15, 23, 42, 0.04);
+      color: var(--text-primary);
+    }
+
     .ghost-button {
       display: inline-flex;
       align-items: center;
@@ -510,6 +523,7 @@
         <div class="actions">
           <button class="primary" type="button" onclick="generateSignature()">Genereer handtekening</button>
           <button class="secondary" type="button" onclick="exportAll()">Exporteer naar Outlook (ZIP)</button>
+          <button class="tertiary" type="button" onclick="clearForm()">Velden leegmaken</button>
         </div>
       </section>
 
@@ -557,6 +571,9 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
     const themeToggle = document.getElementById('theme-toggle');
     const themeIcon = themeToggle.querySelector('.icon');
     const themeLabel = themeToggle.querySelector('.label');
+    const signaturePlaceholder = signaturePreview.innerHTML;
+    const mobileErrorMessage = document.getElementById('error-mobile');
+    const defaultMobileErrorText = mobileErrorMessage.textContent;
 
     let htmlSignature = "";
     let txtSignature = "";
@@ -565,6 +582,19 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
     function clearErrors() {
       document.querySelectorAll('input').forEach(input => input.classList.remove('error'));
       document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+      mobileErrorMessage.textContent = defaultMobileErrorText;
+    }
+
+    function clearForm() {
+      document.querySelectorAll('input').forEach(input => {
+        input.value = '';
+      });
+      clearErrors();
+      htmlSignature = "";
+      txtSignature = "";
+      rtfSignature = "";
+      signaturePreview.classList.remove('has-content');
+      signaturePreview.innerHTML = signaturePlaceholder;
     }
 
     function isValidBelgianMobile(number) {
@@ -589,7 +619,7 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
       if (!title) { showError('title'); valid = false; }
       if (!email || !email.toLowerCase().endsWith('@atlascopco.com')) { showError('email'); valid = false; }
       if (!mobile || !isValidBelgianMobile(mobile)) {
-        document.getElementById('error-mobile').innerText = 'Geef een geldig Belgisch mobiel nummer (04xxxxxxxx of +32xxxxxxxxx)';
+        mobileErrorMessage.textContent = 'Geef een geldig Belgisch mobiel nummer (04xxxxxxxx of +32xxxxxxxxx)';
         showError('mobile');
         valid = false;
       }
