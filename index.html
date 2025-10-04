@@ -655,6 +655,30 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
     let txtSignature = "";
     let rtfSignature = "";
 
+    function escapeHtml(value) {
+      return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function escapeRtf(value) {
+      return value
+        .replace(/\\/g, "\\\\")
+        .replace(/{/g, "\\{")
+        .replace(/}/g, "\\}");
+    }
+
+    function sanitizeTel(value) {
+      return value.replace(/[^+0-9]/g, '');
+    }
+
+    function sanitizeFileSegment(value) {
+      return value.replace(/[^a-zA-Z0-9@._+-]/g, '_');
+    }
+
     function clearErrors() {
       document.querySelectorAll('input').forEach(input => input.classList.remove('error'));
       document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
@@ -705,23 +729,31 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
       let contactInfoHtml = "";
       let contactInfoText = "";
 
-      contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">Mobile: <a href="tel:${mobile}" style="color:#2F363A;text-decoration:none;">${mobile}</a></div>`;
+      const safeName = escapeHtml(name);
+      const safeTitle = escapeHtml(title);
+      const safeEmail = escapeHtml(email);
+      const safeMobile = escapeHtml(mobile);
+      const safePhone = escapeHtml(phone);
+      const telMobile = sanitizeTel(mobile);
+      const telPhone = sanitizeTel(phone);
+
+      contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">Mobile: <a href="tel:${telMobile}" style="color:#2F363A;text-decoration:none;">${safeMobile}</a></div>`;
       contactInfoText += `Mobile: ${mobile}\n`;
 
       if (phone !== "") {
-        contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">Phone: <a href="tel:${phone}" style="color:#2F363A;text-decoration:none;">${phone}</a></div>`;
+        contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">Phone: <a href="tel:${telPhone}" style="color:#2F363A;text-decoration:none;">${safePhone}</a></div>`;
         contactInfoText += `Phone: ${phone}\n`;
       }
 
-      contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">E-mail: <a href="mailto:${email}" style="color:#0092BC;text-decoration:none;">${email}</a></div>`;
+      contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">E-mail: <a href="mailto:${safeEmail}" style="color:#0092BC;text-decoration:none;">${safeEmail}</a></div>`;
       contactInfoText += `E-mail: ${email}\n`;
 
       htmlSignature = `
 <html><head><meta charset="UTF-8"></head><body>
 <div style="font-family:Calibri,Arial,sans-serif; font-size:9pt; color:#2F363A; line-height:1.4; max-width:600px;">
   <div>Best regards,</div>
-  <div style="font-weight:bold; color:#0092BC; font-size:11pt; margin-top:4px;">${name}</div>
-  <div style="font-weight:bold; font-size:9pt; margin-top:2px;">${title}</div>
+  <div style="font-weight:bold; color:#0092BC; font-size:11pt; margin-top:4px;">${safeName}</div>
+  <div style="font-weight:bold; font-size:9pt; margin-top:2px;">${safeTitle}</div>
 
   <hr style="border:0;border-top:1px solid #E1D6CE;margin:8px 0;">
 
@@ -781,8 +813,8 @@ Part of Atlas Copco Group
       rtfSignature = `{\\rtf1\\ansi\\deff0
 {\\fonttbl{\\f0 Calibri;}}
 \\f0\\fs18 Best regards,\\line
-\\b\\cf1 ${name}\\b0\\line
-${title}\\line
+\\b\\cf1 ${escapeRtf(name)}\\b0\\line
+${escapeRtf(title)}\\line
 \\line
 Atlas Copco Tools Central Europe GmbH\\line
 Head Office: Atlas Copco Tools Central Europe GmbH, Langemarckstr. 35, D-45141 Essen\\line
@@ -815,7 +847,7 @@ Part of Atlas Copco Group
         return;
       }
       const email = document.getElementById('email').value.trim();
-      const baseName = 'AtlasCopco(' + email + ')';
+      const baseName = 'AtlasCopco(' + sanitizeFileSegment(email) + ')';
 
       const zip = new JSZip();
       zip.file(baseName + '.htm', htmlSignature);
