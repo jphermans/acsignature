@@ -77,10 +77,11 @@
       z-index: 1;
       max-width: 1120px;
       margin: 0 auto;
-      padding: 40px 24px 64px;
+      width: 100%;
+      padding: clamp(32px, 6vw, 64px) clamp(18px, 6vw, 32px) clamp(56px, 8vw, 80px);
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: clamp(24px, 6vw, 40px);
     }
 
     .topbar {
@@ -88,6 +89,8 @@
       justify-content: space-between;
       align-items: center;
       gap: 16px;
+      flex-wrap: wrap;
+      row-gap: 12px;
     }
 
     .brand {
@@ -153,15 +156,15 @@
 
     .layout {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 24px;
-      align-items: start;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: clamp(20px, 4vw, 32px);
+      align-items: stretch;
     }
 
     .card {
       background: var(--surface);
       border-radius: 24px;
-      padding: 32px;
+      padding: clamp(24px, 4vw, 36px);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
@@ -363,6 +366,17 @@
       gap: 18px;
     }
 
+    .instructions-card {
+      display: grid;
+      gap: clamp(14px, 3vw, 22px);
+    }
+
+    .instructions-card > p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
     #instructions h3 {
       margin: 0;
       font-size: 18px;
@@ -371,14 +385,16 @@
 
     #instructions ol {
       margin: 0;
-      padding-left: 20px;
+      padding-left: clamp(18px, 3vw, 28px);
       display: grid;
-      gap: 10px;
+      gap: 12px;
     }
 
     #instructions li {
       color: var(--text-secondary);
       line-height: 1.6;
+      display: grid;
+      gap: 6px;
     }
 
     #instructions code, #instructions pre {
@@ -397,6 +413,9 @@
     #instructions pre {
       margin: 12px 0;
       white-space: pre-wrap;
+      padding: 10px 12px;
+      border-radius: 12px;
+      overflow-x: auto;
     }
 
     footer {
@@ -407,6 +426,8 @@
       color: var(--text-secondary);
       padding-top: 12px;
       border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      row-gap: 8px;
     }
 
     footer svg {
@@ -426,8 +447,9 @@
     }
 
     @media (max-width: 960px) {
-      .layout {
-        grid-template-columns: 1fr;
+      .page {
+        padding: clamp(28px, 8vw, 48px) clamp(16px, 6vw, 28px) clamp(48px, 10vw, 64px);
+        gap: clamp(24px, 8vw, 36px);
       }
 
       .actions {
@@ -435,15 +457,33 @@
       }
     }
 
+    @media (max-width: 768px) {
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .brand {
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      #theme-toggle {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hero {
+        text-align: left;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+    }
+
     @media (max-width: 640px) {
-      .page {
-        padding: 28px 18px 48px;
-      }
-
-      .card {
-        padding: 24px;
-      }
-
       .brand-mark {
         width: 44px;
         height: 44px;
@@ -460,6 +500,39 @@
 
       .ghost-button {
         width: auto;
+      }
+
+      #instructions ol {
+        padding-left: 18px;
+      }
+
+      #instructions pre {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .hero h1 {
+        font-size: clamp(26px, 8vw, 32px);
+      }
+
+      .instructions-card {
+        gap: 16px;
+      }
+
+      #instructions li {
+        font-size: 14px;
+      }
+
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
