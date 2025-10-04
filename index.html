@@ -2,115 +2,577 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Atlas Copco Handtekening Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Calibri, Arial, sans-serif; margin: 40px; }
-    label { display: block; margin-top: 10px; font-weight: bold; }
-    input { width: 400px; padding: 5px; margin-top: 5px; }
-    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor:pointer; }
-    #signature { margin-top: 40px; padding: 20px; border-top: 2px solid #000; }
-    .line { border: none; border-top: 1px solid #E1D6CE; margin: 8px 0; }
-    #instructions { margin-top: 40px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; }
-    .error { border: 1px solid red; }
-    .error-message { color: red; font-size: 10pt; margin: 3px 0 10px 0; display: none; }
-    footer { margin-top: 40px; font-size: 10pt; color: #666; display: flex; align-items: center; gap: 8px; }
-    footer svg { width: 18px; height: 18px; fill: #333; vertical-align: middle; }
-    footer a { color: #333; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    :root {
+      color-scheme: light;
+      --font-family: "Inter", "Segoe UI", Tahoma, Geneva, sans-serif;
+      --background: #f4f7fb;
+      --surface: #ffffff;
+      --surface-soft: rgba(255, 255, 255, 0.7);
+      --text-primary: #1f2933;
+      --text-secondary: #4b5563;
+      --accent: #0092bc;
+      --accent-strong: #006a86;
+      --accent-soft: rgba(0, 146, 188, 0.12);
+      --border: rgba(15, 23, 42, 0.08);
+      --border-strong: rgba(15, 23, 42, 0.18);
+      --input-bg: rgba(255, 255, 255, 0.9);
+      --input-border: rgba(15, 23, 42, 0.15);
+      --shadow: 0 20px 45px -25px rgba(15, 23, 42, 0.4);
+      --shadow-soft: 0 18px 35px -28px rgba(15, 23, 42, 0.3);
+      --error-color: #d1434b;
+      --background-gradient: linear-gradient(135deg, rgba(0, 146, 188, 0.18), rgba(15, 23, 42, 0.05));
+    }
+
+    body[data-theme="dark"] {
+      color-scheme: dark;
+      --background: #0f172a;
+      --surface: rgba(15, 23, 42, 0.92);
+      --surface-soft: rgba(15, 23, 42, 0.7);
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5f5;
+      --accent: #4cc9f0;
+      --accent-strong: #38a8cc;
+      --accent-soft: rgba(76, 201, 240, 0.14);
+      --border: rgba(148, 163, 184, 0.2);
+      --border-strong: rgba(148, 163, 184, 0.35);
+      --input-bg: rgba(15, 23, 42, 0.8);
+      --input-border: rgba(148, 163, 184, 0.35);
+      --shadow: 0 20px 45px -25px rgba(0, 0, 0, 0.65);
+      --shadow-soft: 0 18px 35px -28px rgba(0, 0, 0, 0.5);
+      --background-gradient: linear-gradient(135deg, rgba(76, 201, 240, 0.22), rgba(15, 23, 42, 0.82));
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      margin: 0;
+      color: var(--text-primary);
+      background: var(--background);
+      min-height: 100vh;
+      transition: background 0.4s ease, color 0.3s ease;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: var(--background-gradient);
+      z-index: 0;
+      pointer-events: none;
+      transition: background 0.4s ease;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.05em;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-copy .eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent-strong);
+    }
+
+    .brand-copy .brand-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .hero {
+      display: grid;
+      gap: 12px;
+      max-width: 720px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 40px);
+      line-height: 1.1;
+      font-weight: 700;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 600px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 32px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      transition: background 0.4s ease, border 0.3s ease, box-shadow 0.4s ease;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 24px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border-radius: 14px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-primary);
+      transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    input::placeholder {
+      color: rgba(99, 110, 133, 0.65);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    input.error {
+      border-color: var(--error-color);
+      box-shadow: 0 0 0 3px rgba(209, 67, 75, 0.12);
+      background: rgba(209, 67, 75, 0.08);
+    }
+
+    .error-message {
+      color: var(--error-color);
+      font-size: 13px;
+      display: none;
+    }
+
+    .actions {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-family);
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 12px 24px;
+      font-size: 15px;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.3s ease, color 0.3s ease;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 12px 20px -12px rgba(0, 146, 188, 0.8);
+    }
+
+    button.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 30px -15px rgba(0, 146, 188, 0.7);
+      background: var(--accent-strong);
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    button.secondary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px -18px rgba(0, 146, 188, 0.45);
+      background: var(--accent-soft);
+    }
+
+    .ghost-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-soft);
+      color: var(--text-primary);
+      backdrop-filter: blur(12px);
+      font-size: 14px;
+    }
+
+    .ghost-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px -18px rgba(15, 23, 42, 0.35);
+    }
+
+    .ghost-button .icon {
+      font-size: 16px;
+    }
+
+    .preview-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 18px;
+    }
+
+    .preview-header p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .signature-preview {
+      border-radius: 18px;
+      border: 1px dashed var(--border-strong);
+      background: rgba(148, 163, 184, 0.08);
+      padding: 24px;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      transition: border 0.3s ease, background 0.3s ease;
+    }
+
+    body[data-theme="dark"] .signature-preview {
+      background: rgba(148, 163, 184, 0.12);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    #signature {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    #signature.has-content {
+      background: #fff;
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+    }
+
+    body[data-theme="dark"] #signature.has-content {
+      background: rgba(15, 23, 42, 0.95);
+      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.22);
+    }
+
+    .signature-placeholder {
+      margin: 0;
+      text-align: center;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    #instructions {
+      display: grid;
+      gap: 18px;
+    }
+
+    #instructions h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    #instructions ol {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 10px;
+    }
+
+    #instructions li {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    #instructions code, #instructions pre {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      background: rgba(15, 23, 42, 0.07);
+      padding: 4px 8px;
+      border-radius: 8px;
+      color: var(--text-primary);
+    }
+
+    body[data-theme="dark"] #instructions code,
+    body[data-theme="dark"] #instructions pre {
+      background: rgba(76, 201, 240, 0.12);
+    }
+
+    #instructions pre {
+      margin: 12px 0;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    footer svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--text-secondary);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 28px 18px 48px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .brand-mark {
+        width: 44px;
+        height: 44px;
+      }
+
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .ghost-button {
+        width: auto;
+      }
+    }
   </style>
-  <!-- JSZip + FileSaver voor zip-download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
-<body>
-  <h2>Atlas Copco Handtekening Generator (België)</h2>
+<body data-theme="light">
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">AC</div>
+        <div class="brand-copy">
+          <span class="eyebrow">Atlas Copco Group</span>
+          <span class="brand-title">Handtekening Generator</span>
+        </div>
+      </div>
+      <button id="theme-toggle" class="ghost-button" type="button" aria-pressed="false">
+        <span class="icon" aria-hidden="true">🌙</span>
+        <span class="label">Donkere modus</span>
+      </button>
+    </header>
 
-  <label for="name">Naam:</label>
-  <input type="text" id="name" required>
-  <div id="error-name" class="error-message">Naam is verplicht</div>
+    <section class="hero">
+      <h1>Maak een professionele Atlas Copco e-mailhandtekening</h1>
+      <p>Vul je gegevens in, genereer het voorbeeld en download alles in één pakket voor een snelle implementatie in Outlook.</p>
+    </section>
 
-  <label for="title">Functie:</label>
-  <input type="text" id="title" required>
-  <div id="error-title" class="error-message">Functie is verplicht</div>
+    <main class="layout">
+      <section class="card form-card">
+        <h2>Gegevens</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Naam</label>
+            <input type="text" id="name" placeholder="Bijvoorbeeld: Jan Janssens" required>
+            <div id="error-name" class="error-message">Naam is verplicht</div>
+          </div>
 
-  <label for="email">E-mail:</label>
-  <input type="email" id="email" required>
-  <div id="error-email" class="error-message">E-mail is verplicht en moet eindigen op @atlascopco.com</div>
+          <div class="form-group">
+            <label for="title">Functie</label>
+            <input type="text" id="title" placeholder="Bijvoorbeeld: Sales Engineer" required>
+            <div id="error-title" class="error-message">Functie is verplicht</div>
+          </div>
 
-  <label for="mobile">Mobiel (verplicht):</label>
-  <input type="text" id="mobile" required>
-  <div id="error-mobile" class="error-message">Mobiel nummer is verplicht</div>
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="naam@atlascopco.com" required>
+            <div id="error-email" class="error-message">E-mail is verplicht en moet eindigen op @atlascopco.com</div>
+          </div>
 
-  <label for="phone">Telefoon (optioneel):</label>
-  <input type="text" id="phone">
+          <div class="form-group">
+            <label for="mobile">Mobiel (verplicht)</label>
+            <input type="text" id="mobile" placeholder="04xxxxxxxx of +32xxxxxxxxx" required>
+            <div id="error-mobile" class="error-message">Mobiel nummer is verplicht</div>
+          </div>
 
-  <button onclick="generateSignature()">Genereer Handtekening</button>
-  <button onclick="exportAll()">Exporteer naar Outlook (ZIP)</button>
+          <div class="form-group">
+            <label for="phone">Telefoon (optioneel)</label>
+            <input type="text" id="phone" placeholder="Vast nummer">
+          </div>
+        </div>
+        <div class="actions">
+          <button class="primary" type="button" onclick="generateSignature()">Genereer handtekening</button>
+          <button class="secondary" type="button" onclick="exportAll()">Exporteer naar Outlook (ZIP)</button>
+        </div>
+      </section>
 
-  <div id="signature"></div>
+      <section class="card preview-card">
+        <div class="preview-header">
+          <h2>Voorbeeld</h2>
+          <p>Bekijk de handtekening zoals je collega&#39;s die ontvangen.</p>
+        </div>
+        <div class="signature-preview">
+          <div id="signature" class="signature-canvas">
+            <p class="signature-placeholder">Vul je gegevens in en klik op <strong>Genereer handtekening</strong> om hier een voorbeeld te zien.</p>
+          </div>
+        </div>
+      </section>
+    </main>
 
-  <div id="instructions">
-    <h3>Outlook implementatie</h3>
-    <p><b>Stappenplan:</b></p>
-    <ol>
-      <li>Klik op <b>Exporteer naar Outlook (ZIP)</b> → er wordt een ZIP-bestand gedownload met alle nodige bestanden.</li>
-      <li>Open het ZIP-bestand en pak de inhoud uit.</li>
-      <li>Open de map <code>%appdata%\Microsoft\Signatures</code> in Windows Verkenner.</li>
-      <li>Kopieer de bestanden en de map uit de ZIP naar deze Signatures-map.  
-        Voorbeeldstructuur:
-        <pre>
-AtlasCopco(john.doe@atlascopco.com).htm
+    <section class="card instructions-card" id="instructions">
+      <h3>Outlook implementatie</h3>
+      <p><strong>Stappenplan:</strong></p>
+      <ol>
+        <li>Klik op <strong>Exporteer naar Outlook (ZIP)</strong>. Er wordt een ZIP-bestand gedownload met alle benodigde bestanden.</li>
+        <li>Open het ZIP-bestand en pak de inhoud uit.</li>
+        <li>Open de map <code>%appdata%\Microsoft\Signatures</code> in Windows Verkenner.</li>
+        <li>Kopieer de bestanden en de map uit de ZIP naar deze Signatures-map. Voorbeeldstructuur:
+          <pre>AtlasCopco(john.doe@atlascopco.com).htm
 AtlasCopco(john.doe@atlascopco.com).rtf
 AtlasCopco(john.doe@atlascopco.com).txt
-AtlasCopco(john.doe@atlascopco.com)_files\
-        </pre>
-      </li>
-      <li>Sluit Outlook volledig af (ook via Taakbeheer) en start opnieuw.</li>
-      <li>Ga naar <b>Bestand → Opties → E-mail → Handtekeningen</b> en kies de nieuwe handtekening als standaard.</li>
-    </ol>
+AtlasCopco(john.doe@atlascopco.com)_files\</pre>
+        </li>
+        <li>Sluit Outlook volledig af (ook via Taakbeheer) en start opnieuw.</li>
+        <li>Ga naar <strong>Bestand → Opties → E-mail → Handtekeningen</strong> en kies de nieuwe handtekening als standaard.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.62 7.62 0 0 1 8 4.8c.68.01 1.36.09 2 .26 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+      </svg>
+      <a href="https://github.com/jphermans/acsignature" target="_blank" rel="noopener">Developed by JPHsystems © 2025</a>
+    </footer>
   </div>
 
-  <footer>
-    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 
-        7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49
-        -2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
-        -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 
-        1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07
-        -1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
-        -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.62 
-        7.62 0 0 1 8 4.8c.68.01 1.36.09 2 .26 1.53-1.04 
-        2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 
-        1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 
-        1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 
-        8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-    </svg>
-    <a href="https://github.com/jphermans/acsignature" target="_blank">Developed by JPHsystems © 2025</a>
-  </footer>
-
   <script>
+    const signaturePreview = document.getElementById('signature');
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('.icon');
+    const themeLabel = themeToggle.querySelector('.label');
+
     let htmlSignature = "";
     let txtSignature = "";
     let rtfSignature = "";
 
     function clearErrors() {
-      document.querySelectorAll("input").forEach(input => input.classList.remove("error"));
-      document.querySelectorAll(".error-message").forEach(msg => msg.style.display = "none");
+      document.querySelectorAll('input').forEach(input => input.classList.remove('error'));
+      document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
     }
-	
-	function isValidBelgianMobile(number) {
-	  // spaties en streepjes verwijderen
-	  const clean = number.replace(/[\s\-]/g, "");
 
-	  // Nationaal: 10 cijfers, start met 04
-	  const nationalPattern = /^04\d{8}$/;
-
-	  // Internationaal: +32 gevolgd door 9 cijfers (zonder 0 erna)
-	  const intlPattern = /^\+32\d{9}$/;
-
-	  return nationalPattern.test(clean) || intlPattern.test(clean);
-	}
-
+    function isValidBelgianMobile(number) {
+      const clean = number.replace(/[\s\-]/g, "");
+      const nationalPattern = /^04\d{8}$/;
+      const intlPattern = /^\+32\d{9}$/;
+      return nationalPattern.test(clean) || intlPattern.test(clean);
+    }
 
     function generateSignature() {
       clearErrors();
@@ -123,15 +585,14 @@ AtlasCopco(john.doe@atlascopco.com)_files\
 
       let valid = true;
 
-      if (!name) { showError("name"); valid = false; }
-      if (!title) { showError("title"); valid = false; }
-      if (!email || !email.toLowerCase().endsWith("@atlascopco.com")) { showError("email"); valid = false; }
+      if (!name) { showError('name'); valid = false; }
+      if (!title) { showError('title'); valid = false; }
+      if (!email || !email.toLowerCase().endsWith('@atlascopco.com')) { showError('email'); valid = false; }
       if (!mobile || !isValidBelgianMobile(mobile)) {
-		  document.getElementById("error-mobile").innerText =
-			"Geef een geldig Belgisch mobiel nummer (04xxxxxxxx of +32xxxxxxxxx)";
-		  showError("mobile");
-		  valid = false;
-		}
+        document.getElementById('error-mobile').innerText = 'Geef een geldig Belgisch mobiel nummer (04xxxxxxxx of +32xxxxxxxxx)';
+        showError('mobile');
+        valid = false;
+      }
 
       if (!valid) return;
 
@@ -149,7 +610,6 @@ AtlasCopco(john.doe@atlascopco.com)_files\
       contactInfoHtml += `<div style="font-size:9pt;color:#2F363A;">E-mail: <a href="mailto:${email}" style="color:#0092BC;text-decoration:none;">${email}</a></div>`;
       contactInfoText += `E-mail: ${email}\n`;
 
-      // HTML versie
       htmlSignature = `
 <html><head><meta charset="UTF-8"></head><body>
 <div style="font-family:Calibri,Arial,sans-serif; font-size:9pt; color:#2F363A; line-height:1.4; max-width:600px;">
@@ -190,7 +650,6 @@ AtlasCopco(john.doe@atlascopco.com)_files\
 </div>
 </body></html>`;
 
-      // TXT versie
       txtSignature = `Best regards,
 ${name}
 ${title}
@@ -202,8 +661,7 @@ Head Office: New Address as of Dec 1, 2025: Wetterschacht 9, D-45139 Essen
 Branch Office Belgium (Atlas Copco Tools Belgium): Bremakker 45, B-3740 Bilzen
 Managing Director: Claus Schiedeck, Peter Edmonds
 
-${contactInfoText}
-VAT Reg.No.: DE811155641 (Germany) / BE0473470658 (Belgium)
+${contactInfoText}VAT Reg.No.: DE811155641 (Germany) / BE0473470658 (Belgium)
 Company Reg. Office: HRB 5096 – Local Court Essen (Head Office) / R.C.B. 646980 - Brussels (Belgian Branch)
 Peppol ID (Belgium): 0208:0473470658
 
@@ -214,7 +672,6 @@ Level up your experience at atlascopco.com
 Part of Atlas Copco Group
 `;
 
-      // RTF versie (basic)
       rtfSignature = `{\\rtf1\\ansi\\deff0
 {\\fonttbl{\\f0 Calibri;}}
 \\f0\\fs18 Best regards,\\line
@@ -236,31 +693,75 @@ Privacy Policy: https://www.atlascopco.com/nl-be/itba/privacy-policy\\line
 Level up your experience at atlascopco.com\\line
 Part of Atlas Copco Group
 }`;
-      document.getElementById('signature').innerHTML = htmlSignature;
+
+      signaturePreview.classList.add('has-content');
+      signaturePreview.innerHTML = htmlSignature;
     }
 
     function showError(field) {
-      document.getElementById(field).classList.add("error");
-      document.getElementById("error-" + field).style.display = "block";
+      document.getElementById(field).classList.add('error');
+      document.getElementById('error-' + field).style.display = 'block';
     }
 
     function exportAll() {
       if (!htmlSignature) {
-        alert("Genereer eerst een handtekening!");
+        alert('Genereer eerst een handtekening!');
         return;
       }
       const email = document.getElementById('email').value.trim();
-      const baseName = "AtlasCopco(" + email + ")";
+      const baseName = 'AtlasCopco(' + email + ')';
 
       const zip = new JSZip();
-      zip.file(baseName + ".htm", htmlSignature);
-      zip.file(baseName + ".txt", txtSignature);
-      zip.file(baseName + ".rtf", rtfSignature);
-      zip.folder(baseName + "_files"); // lege map
+      zip.file(baseName + '.htm', htmlSignature);
+      zip.file(baseName + '.txt', txtSignature);
+      zip.file(baseName + '.rtf', rtfSignature);
+      zip.folder(baseName + '_files');
 
-      zip.generateAsync({ type: "blob" }).then(function(content) {
-        saveAs(content, baseName + ".zip");
+      zip.generateAsync({ type: 'blob' }).then(function(content) {
+        saveAs(content, baseName + '.zip');
       });
+    }
+
+    function applyTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+      if (theme === 'dark') {
+        themeIcon.textContent = '☀️';
+        themeLabel.textContent = 'Lichte modus';
+      } else {
+        themeIcon.textContent = '🌙';
+        themeLabel.textContent = 'Donkere modus';
+      }
+    }
+
+    function detectPreferredTheme() {
+      const stored = localStorage.getItem('acsignature-theme');
+      if (stored === 'light' || stored === 'dark') {
+        return stored;
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    applyTheme(detectPreferredTheme());
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.body.getAttribute('data-theme');
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('acsignature-theme', nextTheme);
+      applyTheme(nextTheme);
+    });
+
+    const handleSystemThemeChange = event => {
+      if (!localStorage.getItem('acsignature-theme')) {
+        applyTheme(event.matches ? 'dark' : 'light');
+      }
+    };
+
+    if (prefersDark.addEventListener) {
+      prefersDark.addEventListener('change', handleSystemThemeChange);
+    } else if (prefersDark.addListener) {
+      prefersDark.addListener(handleSystemThemeChange);
     }
   </script>
 </body>
