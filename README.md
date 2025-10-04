@@ -22,10 +22,11 @@ Gebouwd met **HTML, CSS en JavaScript**.
 De generator:
 - ✅ Maakt automatisch een **ZIP** met `.htm`, `.rtf`, `.txt` en `_files` map.  
 - ✅ Naamgeving volgens Outlook-standaard: `AtlasCopco(naam@atlascopco.com).*`.  
-- ✅ Zorgt dat verplichte velden (Naam, Functie, E-mail, Mobiel) ingevuld zijn.  
-- ✅ Controleert dat het e-mailadres eindigt op `@atlascopco.com`.  
+- ✅ Zorgt dat verplichte velden (Naam, Functie, E-mail, Mobiel) ingevuld zijn.
+- ✅ Controleert dat het e-mailadres eindigt op `@atlascopco.com`.
 - ✅ Geeft duidelijke foutmeldingen bij ontbrekende velden.
 - ✅ Houdt de knoppen consistent: **Velden leegmaken** gebruikt dezelfde secundaire stijl als de downloadknop.
+- ✅ Volledig responsieve interface – inclusief uitlegkaart – voor comfortabel gebruik op mobiel, tablet en desktop.
 
 ---
 
