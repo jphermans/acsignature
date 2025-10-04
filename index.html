@@ -361,6 +361,11 @@
       line-height: 1.5;
     }
 
+    .preview-privacy-note {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
     #instructions {
       display: grid;
       gap: 18px;
@@ -834,6 +839,18 @@ Part of Atlas Copco Group
 
       signaturePreview.classList.add('has-content');
       signaturePreview.innerHTML = htmlSignature;
+      maskManagingDirectorInPreview(signaturePreview);
+    }
+
+    function maskManagingDirectorInPreview(container) {
+      const managingDirectorLabel = 'Managing Director:';
+      const managingDirectorElement = Array.from(container.querySelectorAll('div')).find(div =>
+        div.textContent.trim().startsWith(managingDirectorLabel)
+      );
+
+      if (managingDirectorElement) {
+        managingDirectorElement.innerHTML = `${managingDirectorLabel} <span class="preview-privacy-note">[Verborgen in preview]</span>`;
+      }
     }
 
     function showError(field) {
