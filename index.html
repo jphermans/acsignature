@@ -93,6 +93,50 @@
       row-gap: 12px;
     }
 
+    .belgium-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .belgium-badge .flag-icon {
+      display: inline-grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 20px;
+      height: 14px;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .belgium-badge .flag-icon span {
+      display: block;
+    }
+
+    .belgium-badge .flag-icon span:nth-child(1) {
+      background: #000000;
+    }
+
+    .belgium-badge .flag-icon span:nth-child(2) {
+      background: #fae042;
+    }
+
+    .belgium-badge .flag-icon span:nth-child(3) {
+      background: #ed2939;
+    }
+
+    body[data-theme="dark"] .belgium-badge {
+      background: var(--surface-soft);
+    }
+
     .brand {
       display: flex;
       align-items: center;
@@ -557,6 +601,10 @@
           <span class="brand-title">Handtekening Generator</span>
         </div>
       </div>
+      <div class="belgium-badge" aria-label="Speciaal voor Belgische gebruikers">
+        <span class="flag-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>Voor België</span>
+      </div>
       <button id="theme-toggle" class="ghost-button" type="button" aria-pressed="false">
         <span class="icon" aria-hidden="true">🌙</span>
         <span class="label">Donkere modus</span>
@@ -565,7 +613,7 @@
 
     <section class="hero">
       <h1>Maak een professionele Atlas Copco e-mailhandtekening</h1>
-      <p>Vul je gegevens in, genereer het voorbeeld en download alles in één pakket voor een snelle implementatie in Outlook.</p>
+      <p>Speciaal voor onze Belgische collega's: vul je gegevens in, genereer het voorbeeld en download alles in één pakket voor een snelle implementatie in Outlook.</p>
     </section>
 
     <main class="layout">

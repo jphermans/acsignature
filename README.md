@@ -16,7 +16,7 @@ Bekijk en gebruik de generator hier:
 ---
 
 ## 📌 Over dit project
-Een eenvoudige tool om automatisch professionele e-mailhandtekeningen te genereren.  
+Een eenvoudige tool om automatisch professionele e-mailhandtekeningen te genereren, speciaal afgestemd op gebruik in België.
 Gebouwd met **HTML, CSS en JavaScript**.  
 
 De generator:
