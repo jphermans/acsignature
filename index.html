@@ -727,6 +727,7 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
     function sanitizeTel(value) {
       let sanitized = value.replace(/[\s()-]/g, '');
       sanitized = sanitized.replace(/^\+320/, '+32');
+      sanitized = sanitized.replace(/^\+490/, '+49');
       return sanitized.replace(/[^+0-9]/g, '');
     }
 
@@ -752,12 +753,20 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
       signaturePreview.innerHTML = signaturePlaceholder;
     }
 
-    function isValidBelgianMobile(number) {
+    function isValidMobileNumber(number) {
+      const trimmed = number.trim();
       const clean = number.replace(/[\s()-]/g, "");
       const normalized = clean.replace(/^\+320/, "+32");
-      const nationalPattern = /^04\d{8}$/;
-      const intlPattern = /^\+32\d{9}$/;
-      return nationalPattern.test(normalized) || intlPattern.test(normalized);
+      const belgianNationalPattern = /^04\d{8}$/;
+      const belgianInternationalPattern = /^\+32\d{9}$/;
+      const germanPattern = /^\+49(?:\(0\))?\s?\d{7,13}$/;
+
+      if (belgianNationalPattern.test(normalized) || belgianInternationalPattern.test(normalized)) {
+        return true;
+      }
+
+      const germanCandidate = trimmed.replace(/\s+/g, ' ');
+      return germanPattern.test(germanCandidate);
     }
 
     function generateSignature() {
@@ -774,8 +783,8 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
       if (!name) { showError('name'); valid = false; }
       if (!title) { showError('title'); valid = false; }
       if (!email || !email.toLowerCase().endsWith('@atlascopco.com')) { showError('email'); valid = false; }
-      if (!mobile || !isValidBelgianMobile(mobile)) {
-        mobileErrorMessage.textContent = 'Geef een geldig Belgisch mobiel nummer (04xxxxxxxx, +32xxxxxxxxx of +32(0)4xxxxxxxx)';
+      if (!mobile || !isValidMobileNumber(mobile)) {
+        mobileErrorMessage.textContent = 'Geef een geldig Belgisch of Duits mobiel nummer (04xxxxxxxx, +32xxxxxxxxx, +32(0)4xxxxxxxx of +49(0) 123456789)';
         showError('mobile');
         valid = false;
       }
