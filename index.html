@@ -640,7 +640,7 @@
 
           <div class="form-group">
             <label for="mobile">Mobiel (verplicht)</label>
-            <input type="text" id="mobile" placeholder="04xxxxxxxx of +32xxxxxxxxx" required>
+            <input type="text" id="mobile" placeholder="04xxxxxxxx, +32xxxxxxxxx of +32(0)4xxxxxxxx" required>
             <div id="error-mobile" class="error-message">Mobiel nummer is verplicht</div>
           </div>
 
@@ -725,7 +725,9 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
     }
 
     function sanitizeTel(value) {
-      return value.replace(/[^+0-9]/g, '');
+      let sanitized = value.replace(/[\s()-]/g, '');
+      sanitized = sanitized.replace(/^\+320/, '+32');
+      return sanitized.replace(/[^+0-9]/g, '');
     }
 
     function sanitizeFileSegment(value) {
@@ -751,10 +753,11 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
     }
 
     function isValidBelgianMobile(number) {
-      const clean = number.replace(/[\s\-]/g, "");
+      const clean = number.replace(/[\s()-]/g, "");
+      const normalized = clean.replace(/^\+320/, "+32");
       const nationalPattern = /^04\d{8}$/;
       const intlPattern = /^\+32\d{9}$/;
-      return nationalPattern.test(clean) || intlPattern.test(clean);
+      return nationalPattern.test(normalized) || intlPattern.test(normalized);
     }
 
     function generateSignature() {
@@ -772,7 +775,7 @@ AtlasCopco(john.doe@atlascopco.com)_files\</pre>
       if (!title) { showError('title'); valid = false; }
       if (!email || !email.toLowerCase().endsWith('@atlascopco.com')) { showError('email'); valid = false; }
       if (!mobile || !isValidBelgianMobile(mobile)) {
-        mobileErrorMessage.textContent = 'Geef een geldig Belgisch mobiel nummer (04xxxxxxxx of +32xxxxxxxxx)';
+        mobileErrorMessage.textContent = 'Geef een geldig Belgisch mobiel nummer (04xxxxxxxx, +32xxxxxxxxx of +32(0)4xxxxxxxx)';
         showError('mobile');
         valid = false;
       }
