@@ -1,0 +1,39 @@
+name: Build desktop app
+
+on:
+  push:
+    branches:
+      - main
+      - work
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r build/requirements.txt
+
+      - name: Show dependency versions
+        run: |
+          python - <<'PY'
+import importlib
+packages = {
+    "PyInstaller": "PyInstaller",
+    "tkhtmlview": "tkhtmlview",
+}
+for display, module_name in packages.items():
+    module = importlib.import_module(module_name)
+    version = getattr(module, "__version__", getattr(module, "VERSION", "unknown"))
+    print(f"{display} version: {version}")
+PY

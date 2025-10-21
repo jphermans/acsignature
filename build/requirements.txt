@@ -1,0 +1,9 @@
+# Build-time dependencies for packaging the signature generator desktop app.
+# tkhtmlview 0.6.0 was requested previously, but that version was never
+# published on PyPI and breaks builds on Python 3.11. Pin to the latest
+# available release instead.
+pyinstaller>=6.0,<7.0
+# tkhtmlview only publishes up to 0.1.4 on PyPI at the time of writing.
+tkhtmlview==0.1.4
+# Pillow is a dependency of tkhtmlview with Python 3.11 compatible builds.
+Pillow>=9.5.0,<11.0.0
