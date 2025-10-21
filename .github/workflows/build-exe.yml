@@ -1,0 +1,32 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install build dependencies
+        run: pip install pyinstaller
+
+      - name: Build executable
+        run: pyinstaller acsignature.py --onefile --name acsignature
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: acsignature-windows
+          path: dist/acsignature.exe
