@@ -45,8 +45,7 @@
           "target": "zip",
           "arch": ["x64", "arm64"]
         }
-      ],
-      "icon": "assets/icon.icns"
+      ]
     },
     "win": {
       "target": [
@@ -58,16 +57,14 @@
           "target": "portable",
           "arch": ["x64", "ia32"]
         }
-      ],
-      "icon": "assets/icon.ico"
+      ]
     },
     "linux": {
       "target": [
         "AppImage",
         "deb"
       ],
-      "category": "Utility",
-      "icon": "assets/icon.png"
+      "category": "Utility"
     }
   }
 }
