@@ -144,13 +144,16 @@ jobs:
       - name: 🧾 Create GitHub Release with auto-notes
         uses: softprops/action-gh-release@v2
         with:
-          files: release_dist/**/*
+          files: |
+            release_dist/**/*.exe
+            release_dist/**/*.dmg
+            release_dist/**/*.zip
+            release_dist/**/*.AppImage
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 📦 List uploaded files (debug info)
+      - name: 📦 List uploaded files
         run: |
-          echo "✅ Release files found in release_dist:"
+          echo "✅ Files prepared for release:"
           find release_dist -type f
-        shell: bash
