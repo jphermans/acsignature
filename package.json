@@ -7,76 +7,58 @@
     "start": "electron .",
     "build": "electron-builder",
     "build:win": "electron-builder --win",
-    "build:mac": "electron-builder --mac",
-    "build:linux": "electron-builder --linux"
+    "build:mac": "electron-builder --mac"
   },
-  "keywords": [
-    "email",
-    "signature",
-    "generator",
-    "atlas-copco"
-  ],
+  "keywords": ["email", "signature", "generator", "atlas-copco"],
   "author": "Atlas Copco",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^39.1.0",
+    "electron": "^28.0.0",
     "electron-builder": "^24.9.1"
   },
   "build": {
     "appId": "com.atlascopco.signature-generator",
     "productName": "Atlas Copco Signature Generator",
+    "directories": {
+      "output": "dist"
+    },
     "files": [
       "main.js",
       "index.html",
       "assets/**/*",
       "atlas_copco_signature_be.html"
     ],
-    "directories": {
-      "output": "dist"
-    },
+    "asar": true,
+    "compression": "maximum",
+    "removePackageScripts": true,
     "mac": {
       "category": "public.app-category.productivity",
       "target": [
         {
           "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
+          "arch": ["x64", "arm64"]
         }
-      ]
+      ],
+      "artifactName": "${productName}-${version}-mac.${ext}",
+      "hardenedRuntime": false
     },
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
+          "arch": ["x64"]
         }
-      ]
+      ],
+      "artifactName": "${productName}-${version}-win.${ext}",
+      "compression": "maximum"
     },
     "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ],
+      "target": ["AppImage"],
+      "artifactName": "${productName}-${version}-linux.${ext}",
       "category": "Utility"
+    },
+    "extraMetadata": {
+      "debug": false
     }
   }
 }
