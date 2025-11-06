@@ -43,7 +43,8 @@
       "hardenedRuntime": false,
       "gatekeeperAssess": false,
       "entitlements": null,
-      "sign": false
+      "sign": false,
+      "identity": null
     },
     "win": {
       "target": [
