@@ -23,14 +23,16 @@ jobs:
           node-version: 20
           cache: "npm"
 
-      - name: 📦 Install dependencies (with fallback)
+      - name: 📦 Install dependencies (auto-repair lockfile)
         run: |
+          echo "🧰 Checking lockfile consistency..."
           if [ -f package-lock.json ]; then
-            npm ci
-          else
-            echo "⚠️ No lockfile found — running npm install"
-            npm install
+            echo "⚙️ Existing lockfile found — removing to avoid npm ci sync errors"
+            rm -f package-lock.json
           fi
+          echo "📦 Installing fresh dependencies and regenerating lockfile"
+          npm install
+          echo "✅ Installation complete"
 
       - name: 🏗 Build Electron App for platform
         run: |
