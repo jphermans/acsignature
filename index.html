@@ -2,7 +2,11 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, minimum-scale=0.5, user-scalable=yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="format-detection" content="telephone=no">
   <title>Atlas Copco Handtekening Generator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -448,6 +452,26 @@
 
     #instructions code, #instructions pre {
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    /* Responsive utility classes */
+    .hidden-mobile {
+      display: block;
+    }
+
+    .visible-mobile {
+      display: none;
+    }
+
+    .text-center-mobile {
+      text-align: left;
+    }
+
+    .full-width-mobile {
+      width: auto;
+    }
+
+    #instructions code, #instructions pre {
       background: rgba(15, 23, 42, 0.07);
       padding: 4px 8px;
       border-radius: 8px;
@@ -513,12 +537,18 @@
       .topbar {
         flex-direction: column;
         align-items: stretch;
+        gap: 12px;
       }
 
       .brand {
         width: 100%;
         justify-content: space-between;
         align-items: center;
+      }
+
+      .belgium-badge {
+        margin-left: auto;
+        align-self: flex-end;
       }
 
       #theme-toggle {
@@ -528,10 +558,32 @@
 
       .hero {
         text-align: left;
+        max-width: 100%;
       }
 
       .hero p {
-        font-size: 15px;
+        font-size: 14px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        gap: clamp(20px, 5vw, 28px);
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      button.primary,
+      button.secondary {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .ghost-button {
+        width: auto;
+        align-self: flex-start;
       }
     }
 
@@ -541,13 +593,21 @@
         height: 44px;
       }
 
-      button {
+      #theme-toggle {
         width: 100%;
         justify-content: center;
       }
 
       .actions {
         flex-direction: column;
+        gap: 10px;
+      }
+
+      button.primary,
+      button.secondary,
+      button.tertiary {
+        width: 100%;
+        justify-content: center;
       }
 
       .ghost-button {
@@ -560,6 +620,25 @@
 
       #instructions pre {
         font-size: 13px;
+        padding: 8px 10px;
+      }
+
+      .card {
+        padding: clamp(20px, 5vw, 28px);
+      }
+
+      .signature-preview {
+        min-height: 180px;
+        padding: 16px;
+      }
+
+      input {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+
+      .page {
+        padding: clamp(24px, 8vw, 40px) clamp(12px, 4vw, 20px);
       }
     }
 
@@ -570,8 +649,16 @@
         gap: 8px;
       }
 
+      .brand-copy .brand-title {
+        font-size: 18px;
+      }
+
       .hero h1 {
-        font-size: clamp(26px, 8vw, 32px);
+        font-size: clamp(20px, 7vw, 28px);
+      }
+
+      .hero p {
+        font-size: 13px;
       }
 
       .instructions-card {
@@ -585,6 +672,292 @@
       footer {
         flex-direction: column;
         align-items: flex-start;
+        gap: 8px;
+      }
+
+      .belgium-badge {
+        font-size: 12px;
+        padding: 6px 12px;
+        align-self: flex-start;
+      }
+
+      #signature img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .brand {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .hero h1 {
+        font-size: clamp(18px, 8vw, 22px);
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      input {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+
+      #instructions code,
+      #instructions pre {
+        font-size: 11px;
+      }
+
+      .ghost-button {
+        font-size: 13px;
+        padding: 8px 14px;
+      }
+
+      .belgium-badge {
+        font-size: 11px;
+        padding: 5px 10px;
+      }
+
+      .preview-header p {
+        font-size: 12px;
+      }
+    }
+
+    /* Extra small devices */
+    @media (max-width: 320px) {
+      .page {
+        padding: 20px 8px;
+      }
+
+      .brand-mark {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        font-size: 14px;
+      }
+
+      .brand-copy .brand-title {
+        font-size: 16px;
+      }
+
+      .belgium-badge {
+        font-size: 10px;
+        padding: 4px 8px;
+        gap: 6px;
+      }
+
+      .belgium-badge .flag-icon {
+        width: 16px;
+        height: 12px;
+      }
+
+      .hero h1 {
+        font-size: 16px;
+      }
+
+      .card h2 {
+        font-size: 20px;
+        margin-bottom: 18px;
+      }
+
+      #instructions h3 {
+        font-size: 16px;
+      }
+
+      button.primary,
+      button.secondary,
+      button.tertiary {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+
+      .signature-preview {
+        min-height: 150px;
+        padding: 12px;
+      }
+
+      /* Utility classes for mobile */
+      .hidden-mobile {
+        display: none;
+      }
+
+      .visible-mobile {
+        display: block;
+      }
+
+      .text-center-mobile {
+        text-align: center;
+      }
+
+      .full-width-mobile {
+        width: 100%;
+      }
+    }
+
+    /* Large screens optimization */
+    @media (min-width: 1400px) {
+      .page {
+        max-width: 1280px;
+        padding: clamp(48px, 6vw, 72px) clamp(32px, 6vw, 48px) clamp(64px, 8vw, 96px);
+      }
+
+      .layout {
+        grid-template-columns: 1fr 1.2fr;
+        gap: clamp(24px, 4vw, 40px);
+      }
+
+      .hero h1 {
+        font-size: clamp(36px, 4vw, 48px);
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+    }
+
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .brand-mark {
+        border-radius: 20px;
+      }
+
+      .card {
+        border-radius: 28px;
+      }
+
+      .signature-preview {
+        border-radius: 22px;
+      }
+
+      input {
+        border-radius: 16px;
+      }
+    }
+
+    /* Touch device optimizations */
+    @media (hover: none) and (pointer: coarse) {
+      button:hover {
+        transform: none;
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .ghost-button:hover {
+        transform: none;
+      }
+
+      input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px var(--accent-soft);
+      }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      :root {
+        --border: rgba(15, 23, 42, 0.6);
+        --border-strong: rgba(15, 23, 42, 0.8);
+        --input-border: rgba(15, 23, 42, 0.4);
+      }
+
+      body[data-theme="dark"] {
+        --border: rgba(148, 163, 184, 0.4);
+        --border-strong: rgba(148, 163, 184, 0.6);
+        --input-border: rgba(148, 163, 184, 0.5);
+      }
+
+      .signature-preview {
+        border-width: 2px;
+      }
+
+      input {
+        border-width: 2px;
+      }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .page {
+        transition: none;
+      }
+
+      body::before {
+        transition: none;
+      }
+
+      button {
+        transition: none;
+      }
+
+      .ghost-button:hover {
+        transform: none;
+      }
+
+      #signature.has-content {
+        transition: none;
+      }
+    }
+
+    /* Focus visible for keyboard navigation */
+    @media (prefers-reduced-motion: no-preference) {
+      button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      input:focus-visible {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px var(--accent-soft);
+      }
+
+      .ghost-button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+    }
+
+    /* Orientation handling */
+    @media (orientation: landscape) and (max-width: 896px) {
+      .page {
+        padding: clamp(20px, 4vw, 32px) clamp(16px, 6vw, 24px);
+      }
+
+      .layout {
+        grid-template-columns: 1fr 1fr;
+        gap: clamp(16px, 3vw, 24px);
+      }
+
+      .hero {
+        max-width: 600px;
+      }
+
+      .brand {
+        gap: 10px;
+      }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    @media (orientation: portrait) and (min-width: 600px) and (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+        margin: 0 auto;
       }
     }
   </style>
@@ -673,7 +1046,9 @@
       <h3>Outlook implementatie</h3>
       <p><strong>Stappenplan:</strong></p>
       <ol>
-        <li>Klik op <strong>Exporteer naar Outlook (ZIP)</strong>. Er wordt een ZIP-bestand gedownload met alle benodigde bestanden.</li>
+        <li>Klik op <strong>Exporteer naar Outlook (ZIP)</strong>. Er wordt een ZIP-bestand gegenereerd.
+          <br><small><strong>Mobiele apparaten:</strong> In plaats van een traditionele download toont je telefoon een deel/save sheet. Kies "Downloaden" (iOS) of "Opslaan" (Android) om het bestand te bewaren.</small>
+        </li>
         <li>Open het ZIP-bestand en pak de inhoud uit.</li>
         <li>Open de map <code>%appdata%\Microsoft\Signatures</code> in Windows Verkenner.</li>
         <li>Kopieer de bestanden en de map uit de ZIP naar deze Signatures-map. Voorbeeldstructuur:
