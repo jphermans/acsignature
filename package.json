@@ -35,11 +35,11 @@
       "category": "public.app-category.productivity",
       "target": [
         {
-          "target": "dmg",
+          "target": "zip",
           "arch": ["x64", "arm64"]
         }
       ],
-      "artifactName": "${productName}-${version}-mac.${ext}",
+      "artifactName": "${productName}-${version}-mac-${arch}.${ext}",
       "hardenedRuntime": false,
       "gatekeeperAssess": false,
       "entitlements": null,
