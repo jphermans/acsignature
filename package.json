@@ -40,8 +40,11 @@
         }
       ],
       "artifactName": "${productName}-${version}-mac.${ext}",
-      "hardenedRuntime": false
-    },
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "entitlements": null,
+      "sign": false
+    }
     "win": {
       "target": [
         {
