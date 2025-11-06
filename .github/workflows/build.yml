@@ -24,16 +24,17 @@ jobs:
           node-version: 20
           cache: "npm"
 
-      - name: 📦 Install dependencies (auto-repair lockfile)
+     - name: 📦 Install dependencies (safe mode)
         run: |
-          echo "🧰 Checking lockfile consistency..."
+          echo "🧩 Installing dependencies safely..."
           if [ -f package-lock.json ]; then
-            echo "⚙️ Existing lockfile found — removing to avoid npm ci sync errors"
-            rm -f package-lock.json
+            echo "Found lockfile → using npm ci"
+            npm ci || (echo "npm ci failed — falling back to npm install" && rm -f package-lock.json && npm install)
+          else
+            echo "No lockfile found → running npm install"
+            npm install
           fi
-          echo "📦 Installing fresh dependencies and regenerating lockfile"
-          npm install
-          echo "✅ Installation complete"
+          echo "✅ Dependencies installed"
 
       - name: 🏗 Build Electron App for platform
         run: |
