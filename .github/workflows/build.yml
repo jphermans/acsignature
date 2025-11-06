@@ -1,6 +1,7 @@
 name: Build and Release Electron App
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "v*"
