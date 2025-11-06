@@ -74,7 +74,6 @@ jobs:
           fi
         shell: bash
 
-      # ✅ FIX: GH_TOKEN voor electron-builder
       - name: 🏗 Build Electron App for platform
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -88,7 +87,6 @@ jobs:
           fi
         shell: bash
 
-      # Upload artifacts
       - name: 📤 Upload Windows installer
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
@@ -102,7 +100,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macOS-dist
-          path: dist/
+          path: dist/*.dmg
           if-no-files-found: error
 
   changelog:
@@ -141,12 +139,18 @@ jobs:
       - name: 📥 Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          path: dist
+          path: release_dist
 
       - name: 🧾 Create GitHub Release with auto-notes
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/**/*
+          files: release_dist/**/*
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📦 List uploaded files (debug info)
+        run: |
+          echo "✅ Release files found in release_dist:"
+          find release_dist -type f
+        shell: bash
